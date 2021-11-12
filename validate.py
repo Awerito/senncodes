@@ -12,11 +12,18 @@ INVALID = 422
 if __name__ == "__main__":
 
     payloads = gen_payloads()
+
+    with open("data/valid.txt", "r") as file:
+        tmp_valid = set(file.read().split())
+
+    with open("data/invalid.txt", "r") as file:
+        tmp_invalid = set(file.read().split())
+
+    payloads = list(set(payloads) - tmp_valid - tmp_invalid)
     print("Candidate codes:", len(payloads))
 
     valids = open("data/valid.txt", "a")
     invalids = open("data/invalid.txt", "a")
-    errors = open("data/errors.txt", "w")
 
     print("Fetching...")
     corrects = int()
@@ -35,12 +42,10 @@ if __name__ == "__main__":
             msg = colored("Wrong", "red")
             print(f"{i/total * 100:.2f}% {code} {msg}")
         else:
-            errors.write(code + "\n")
             msg = colored("Error", "yellow")
             print(f"{i/total * 100:.2f}% {code} {msg}")
 
     valids.close()
     invalids.close()
-    errors.close()
 
     print("Done fetching!")
