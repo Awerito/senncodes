@@ -29,3 +29,4 @@ To submit the valid codes automatically after finding the valid codes you need t
 - *The valid codes ended up being exactly 300 out of 11907 candidates, giving the code a 
 performance of ~2.5% of likelihood to find a valid code*
 - *The scripts don't search for audio codes, they do not share the same pattern*
+- *The `data/extras.txt` contains codes found manually doe to not have the same patterns*
