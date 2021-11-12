@@ -1,8 +1,8 @@
 import httpx
 from termcolor import colored
 
-from secrets import headers
-from utils import gen_payloads, post_info, validate_code_url
+from utils import gen_payloads, post_info
+from secrets import headers, validate_code_url
 
 
 VALID = 200
