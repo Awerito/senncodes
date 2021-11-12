@@ -17,7 +17,8 @@ To find codes by candidates of the form `HUNT[AEU][B-DF-HJ-NP-TV-Z][AEU][B-DF-HJ
 
 To generate those codes you need to run:
 > $ python3 validate.py
-witch will save the valid codes on `data/valid.txt` file.
+
+this will save the valid codes on `data/valid.txt`, invalid codes on `data/invalid.txt` and failed attempts on `data/errors.txt`.
 
 To submit the valid codes automatically after finding the valid codes you need to run:
 > $ python3 submit.py
