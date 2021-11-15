@@ -29,7 +29,7 @@ if __name__ == "__main__":
     for i, code in enumerate(words):
         payload = f'{{"code": "HUNT{code.upper()}"}}'
 
-        preflight = httpx.options(validate_code_url, headers=headers)
+        preflight = httpx.options(validate_code_url, headers=headers, timeout=None)
         if preflight.status_code == 204:
             response = post_info(validate_code_url, headers, payload)
 
@@ -43,11 +43,11 @@ if __name__ == "__main__":
                 msg = colored(str(response), "red")
                 print(f"{i/total * 100:.2f}% {code} {msg}")
             else:
-                msg = colored("Error", "yellow")
+                msg = colored(str(response), "yellow")
                 print(f"{i/total * 100:.2f}% {code} {msg}")
         else:
-            msg = colored("Error on preflight!", "red")
-            print(msg)
+            msg = colored(str(preflight.status_code), "red")
+            print(f"{i/total * 100:.2f}% {code} {msg}p")
 
     valids.close()
     invalids.close()
