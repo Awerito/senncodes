@@ -4,14 +4,12 @@ from termcolor import colored
 from utils import gen_payloads, post_info
 from secrets import headers, validate_code_url
 
-
 VALID = 200
 INVALID = 422
 
-
 if __name__ == "__main__":
 
-    payloads = gen_payloads()
+    words = gen_payloads()
 
     with open("data/valid.txt", "r") as file:
         tmp_valid = set(file.read().split())
@@ -19,31 +17,37 @@ if __name__ == "__main__":
     with open("data/invalid.txt", "r") as file:
         tmp_invalid = set(file.read().split())
 
-    payloads = list(set(payloads) - tmp_valid - tmp_invalid)
-    print("Candidate codes:", len(payloads))
+    words = list(set(words) - tmp_valid - tmp_invalid)
+    print("Candidate codes:", len(words))
 
     valids = open("data/valid.txt", "a")
     invalids = open("data/invalid.txt", "a")
 
     print("Fetching...")
     corrects = int()
-    total = len(payloads)
-    for i, payload in enumerate(payloads):
-        code = payload[14:-2]
-        response = post_info(validate_code_url, headers, payload)
+    total = len(words)
+    for i, code in enumerate(words):
+        payload = f'{{"code": "HUNT{code.upper()}"}}'
 
-        if response == VALID:
-            corrects += 1
-            valids.write(code + "\n")
-            msg = colored("Valid!", "green")
-            print(f"{i/total * 100:.2f}% {code} {msg} ({corrects})")
-        elif response == INVALID:
-            invalids.write(code + "\n")
-            msg = colored("Wrong", "red")
-            print(f"{i/total * 100:.2f}% {code} {msg}")
+        preflight = httpx.options(validate_code_url, headers=headers)
+        if preflight.status_code == 204:
+            response = post_info(validate_code_url, headers, payload)
+
+            if response == VALID:
+                corrects += 1
+                valids.write(code + "\n")
+                msg = colored(str(response), "green")
+                print(f"{i/total * 100:.2f}% {code} {msg} ({corrects})")
+            elif response == INVALID:
+                invalids.write(code + "\n")
+                msg = colored(str(response), "red")
+                print(f"{i/total * 100:.2f}% {code} {msg}")
+            else:
+                msg = colored("Error", "yellow")
+                print(f"{i/total * 100:.2f}% {code} {msg}")
         else:
-            msg = colored("Error", "yellow")
-            print(f"{i/total * 100:.2f}% {code} {msg}")
+            msg = colored("Error on preflight!", "red")
+            print(msg)
 
     valids.close()
     invalids.close()

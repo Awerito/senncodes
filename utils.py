@@ -19,11 +19,12 @@ def gen_payloads():
                     for e in vowels:
                         words.append("".join([a, b, c, d, e]))
     shuffle(words)
-    return [f'{{"code": "hunt{word}"}}' for word in words]
+    return words
 
 
 if __name__ == "__main__":
+    from pprint import pprint
+
     payloads = gen_payloads()
     print(len(payloads))
-    with open("data/words.txt", "w") as file:
-        file.write("\n".join(payloads))
+    print(payloads[:10])
